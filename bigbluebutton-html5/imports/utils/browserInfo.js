@@ -15,6 +15,27 @@ const isValidSafariVersion = Bowser.getParser(window.navigator.userAgent).satisf
   safari: '>12',
 });
 
+const isValidSafariForPictureInPicture = Bowser
+  .getParser(window.navigator.userAgent)
+  .satisfies({
+    desktop: {
+      safari: '>=13.1',
+    },
+    mobile: {
+      safari: '>=13.4',
+    },
+  });
+
+const isAnotherValidBrowserForPictureInPicture = Bowser
+  .getParser(window.navigator.userAgent)
+  .satisfies({
+    desktop: {
+      chrome: '>=69',
+      edge: '>=79',
+      opera: '>=56',
+    },
+  });
+
 const browserInfo = {
   isChrome,
   isSafari,
@@ -24,6 +45,8 @@ const browserInfo = {
   browserName,
   versionNumber,
   isValidSafariVersion,
+  isValidSafariForPictureInPicture,
+  isAnotherValidBrowserForPictureInPicture,
 };
 
 export default browserInfo;
