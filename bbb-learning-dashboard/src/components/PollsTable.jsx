@@ -132,9 +132,6 @@ class PollsTable extends React.Component {
             <td className="px-4 py-3">
               <div className="flex items-center text-sm">
                 <div className="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                  {/* <img className="object-cover w-full h-full rounded-full" */}
-                  {/*     src="" */}
-                  {/*     alt="" loading="lazy" /> */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="relative hidden w-8 h-8 mr-3 rounded-full md:block"

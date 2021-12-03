@@ -1,4 +1,5 @@
 import { emojiConfigs, filterUserEmojis } from './EmojiService';
+import { tsToHHmmss } from '../utils';
 
 export function getActivityScore(user, allUsers, totalOfPolls) {
   if (user.isModerator) return 0;
@@ -49,10 +50,6 @@ export function getSumOfTime(eventsArr) {
     if (elem.stoppedOn > 0) return prevVal + (elem.stoppedOn - elem.startedOn);
     return prevVal + (new Date().getTime() - elem.startedOn);
   }, 0);
-}
-
-export function tsToHHmmss(ts) {
-  return (new Date(ts).toISOString().substr(11, 8));
 }
 
 const tableHeaderFields = [

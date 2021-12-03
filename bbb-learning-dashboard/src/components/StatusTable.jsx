@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { emojiConfigs, filterUserEmojis } from '../services/EmojiService';
+import { tsToHHmmss } from '../utils';
 import UserAvatar from './UserAvatar';
 
 class StatusTable extends React.Component {
@@ -24,10 +25,6 @@ class StatusTable extends React.Component {
   render() {
     const spanMinutes = 10 * 60000; // 10 minutes default
     const { allUsers, intl } = this.props;
-
-    function tsToHHmmss(ts) {
-      return (new Date(ts).toISOString().substr(11, 8));
-    }
 
     const usersRegisteredTimes = Object.values(allUsers || {}).map((user) => user.registeredOn);
     const usersLeftTimes = Object.values(allUsers || {}).map((user) => {

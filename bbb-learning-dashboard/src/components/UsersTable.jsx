@@ -3,7 +3,8 @@ import {
   FormattedMessage, FormattedDate, FormattedNumber, injectIntl,
 } from 'react-intl';
 import { getUserEmojisSummary, emojiConfigs } from '../services/EmojiService';
-import { getActivityScore, getSumOfTime, tsToHHmmss } from '../services/UserService';
+import { getActivityScore, getSumOfTime } from '../services/UserService';
+import { tsToHHmmss } from '../utils';
 import UserAvatar from './UserAvatar';
 
 class UsersTable extends React.Component {

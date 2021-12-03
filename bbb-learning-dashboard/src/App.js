@@ -10,7 +10,8 @@ import UsersTable from './components/UsersTable';
 import StatusTable from './components/StatusTable';
 import PollsTable from './components/PollsTable';
 import ErrorMessage from './components/ErrorMessage';
-import { makeUserCSVData, tsToHHmmss } from './services/UserService';
+import { makeUserCSVData } from './services/UserService';
+import { tsToHHmmss } from './utils';
 
 class App extends React.Component {
   constructor(props) {
