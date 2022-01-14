@@ -4,8 +4,7 @@ import Button from '/imports/ui/components/button/component';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { styles } from './styles';
-import html2canvas from 'html2canvas';
-import { toJpeg, toPng } from 'html-to-image';
+import { toPng } from 'html-to-image';
 
 const intlMessages = defineMessages({
   
