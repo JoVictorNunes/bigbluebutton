@@ -147,6 +147,7 @@ class VideoProvider extends Component {
       VideoService.getPageChangeDebounceTime(),
       { leading: false, trailing: true },
     );
+    this.startVirtualBackgroundByDrop = this.startVirtualBackgroundByDrop.bind(this);
   }
 
   componentDidMount() {
@@ -545,7 +546,10 @@ class VideoProvider extends Component {
             if (bbbVideoStream == null) {
               bbbVideoStream = new BBBVideoStream(peer.getLocalStream());
               VideoPreviewService.storeStream(
-                MediaStreamUtils.extractVideoDeviceId(bbbVideoStream.mediaStream),
+                MediaStreamUtils.extractDeviceIdFromStream(
+                  bbbVideoStream.mediaStream,
+                  'video',
+                ),
                 bbbVideoStream
               );
             }
@@ -921,7 +925,10 @@ class VideoProvider extends Component {
       peer.attached = true;
 
       if (isLocal) {
-        const deviceId = MediaStreamUtils.extractVideoDeviceId(peer.bbbVideoStream.mediaStream);
+        const deviceId = MediaStreamUtils.extractDeviceIdFromStream(
+          peer.bbbVideoStream.mediaStream,
+          'video',
+        );
         const { type, name } = getSessionVirtualBackgroundInfo(deviceId);
 
         this.restoreVirtualBackground(peer.bbbVideoStream, type, name).catch((error) => {
@@ -929,6 +936,34 @@ class VideoProvider extends Component {
         });
       }
     }
+  }
+
+  startVirtualBackgroundByDrop(stream, type, name, data) {
+    return new Promise((resolve, reject) => {
+      const peer = this.webRtcPeers[stream];
+      const { bbbVideoStream } = peer;
+      const video = this.getVideoElement(stream);
+
+      if (peer && video && peer.attached && video.srcObject) {
+        bbbVideoStream.startVirtualBackground(type, name, { file: data })
+          .then(resolve)
+          .catch(reject);
+      }
+    }).catch((error) => {
+      this.handleVirtualBgErrorByDropping(error, type, name);
+    });
+  }
+
+  handleVirtualBgErrorByDropping(error, type, name) {
+    logger.error({
+      logCode: `video_provider_virtualbg_error`,
+      extraInfo: {
+        errorName: error.name,
+        errorMessage: error.message,
+        virtualBgType: type,
+        virtualBgName: name,
+      },
+    }, `Failed to start virtual background by dropping image: ${error.message}`);
   }
 
   restoreVirtualBackground(stream, type, name) {
@@ -1094,6 +1129,8 @@ class VideoProvider extends Component {
       currentVideoPageIndex,
       streams,
       cameraDockBounds,
+      focusedId,
+      handleVideoFocus,
     } = this.props;
 
     return (
@@ -1103,9 +1140,12 @@ class VideoProvider extends Component {
           swapLayout,
           currentVideoPageIndex,
           cameraDockBounds,
+          focusedId,
+          handleVideoFocus,
         }}
         onVideoItemMount={this.createVideoTag}
         onVideoItemUnmount={this.destroyVideoTag}
+        onVirtualBgDrop={this.startVirtualBackgroundByDrop}
       />
     );
   }

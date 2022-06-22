@@ -40,7 +40,7 @@ const Messages = styled.div`
 
 const SystemMessageChatItem = styled(MessageChatItem)`
   ${({ border }) => border && `
-    background: ${systemMessageBackgroundColor};
+    background-color: ${systemMessageBackgroundColor};
     border: 1px solid ${systemMessageBorderColor};
     border-radius: ${borderRadius};
     font-weight: ${btnFontWeight};
@@ -173,12 +173,6 @@ const ChatItem = styled(MessageChatItem)`
   color: ${colorText};
   word-wrap: break-word;
 
-  ${({ hasLink }) => hasLink && `
-    & > a {
-      color: ${colorPrimary};
-    }
-  `}
-
   ${({ emphasizedMessage }) => emphasizedMessage && `
     font-weight: bold;
   `}
@@ -195,7 +189,7 @@ const PollMessageChatItem = styled(MessageChatItem)`
   color: ${colorText};
   word-wrap: break-word;
 
-  background: ${systemMessageBackgroundColor};
+  background-color: ${systemMessageBackgroundColor};
   border: solid 1px ${colorGrayLighter};
   border-radius: ${borderRadius};
   padding: ${chatPollMarginSm};

@@ -11,9 +11,8 @@ import {
   colorPrimary,
   colorGray,
   colorGrayLighter,
+  colorGrayLightest,
   colorText,
-  colorWhite,
-  colorLink,
 } from '/imports/ui/stylesheets/styled-components/palette';
 
 const FullscreenModal = styled(Styled.BaseModal)`
@@ -34,7 +33,7 @@ const FullscreenModal = styled(Styled.BaseModal)`
 const Header = styled.header`
   display: flex;
   padding: ${lineHeightComputed} 0;
-  border-bottom: ${borderSize} solid ${colorGrayLighter};
+  border-bottom: ${borderSize} solid ${colorGrayLightest};
 `;
 
 const Title = styled.h1`
@@ -101,8 +100,6 @@ const DismissButton = styled(Button)`
 
 const ConfirmButton = styled(Button)`
   flex: 0 1 48%;
-  color: ${colorWhite} !important;
-  background-color: ${colorLink} !important;
 
   ${({ popout }) => popout === 'popout' && `
     & > i {

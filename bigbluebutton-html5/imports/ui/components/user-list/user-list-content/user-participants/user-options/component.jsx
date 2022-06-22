@@ -100,10 +100,6 @@ const intlMessages = defineMessages({
     id: 'app.learning-dashboard.description',
     description: 'Activity Report description',
   },
-  invitationItem: {
-    id: 'app.invitation.title',
-    description: 'invitation to breakout title',
-  },
   saveUserNames: {
     id: 'app.actionsBar.actionsDropdown.saveUserNames',
     description: 'Save user name feature description',
@@ -211,7 +207,6 @@ class UserOptions extends PureComponent {
       toggleMuteAllUsersExceptPresenter,
       meetingIsBreakout,
       hasBreakoutRoom,
-      getUsersNotAssigned,
       openLearningDashboardUrl,
       amIModerator,
       users,
@@ -223,11 +218,6 @@ class UserOptions extends PureComponent {
       && !meetingIsBreakout
       && !hasBreakoutRoom
       && isBreakoutRoomsEnabled();
-
-    const canInviteUsers = amIModerator
-      && !meetingIsBreakout
-      && hasBreakoutRoom
-      && getUsersNotAssigned(users).length;
 
     const { locale } = intl;
 
@@ -305,16 +295,6 @@ class UserOptions extends PureComponent {
         });
       }
 
-      if (canInviteUsers) {
-        this.menuItems.push({
-          icon: 'rooms',
-          dataTest: 'inviteBreakoutRooms',
-          label: intl.formatMessage(intlMessages.invitationItem),
-          key: this.createBreakoutId,
-          onClick: this.onInvitationUsers,
-        });
-      }
-
       if (amIModerator && CaptionsService.isCaptionsEnabled()) {
         this.menuItems.push({
           icon: 'closed_caption',
@@ -343,7 +323,7 @@ class UserOptions extends PureComponent {
   }
 
   render() {
-    const { intl } = this.props;
+    const { intl, isRTL } = this.props;
 
     return (
       <BBBMenu
@@ -360,6 +340,16 @@ class UserOptions extends PureComponent {
           />
         )}
         actions={this.renderMenuItems()}
+        opts={{
+          id: "default-dropdown-menu",
+          keepMounted: true,
+          transitionDuration: 0,
+          elevation: 3,
+          getContentAnchorEl: null,
+          fullwidth: "true",
+          anchorOrigin: { vertical: 'bottom', horizontal: isRTL ? 'right' : 'left' },
+          transformOrigin: { vertical: 'top', horizontal: isRTL ? 'right' : 'left' },
+        }}
       />
     );
   }
