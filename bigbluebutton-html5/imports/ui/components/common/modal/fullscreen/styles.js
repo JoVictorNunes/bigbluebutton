@@ -8,6 +8,8 @@ import {
   modalTitleFw,
 } from '/imports/ui/stylesheets/styled-components/typography';
 import {
+  colorPrimary,
+  colorGray,
   colorGrayLighter,
   colorText,
   colorWhite,
@@ -61,6 +63,40 @@ const Content = styled.div`
 
 const DismissButton = styled(Button)`
   flex: 0 1 48%;
+  background: transparent;
+  color: ${colorGray};
+  border-radius: 4px;
+  box-shadow: none !important;
+
+  &:focus {
+    background: #DCE4EC;
+    border: 2px solid ${colorPrimary};
+  }
+
+  &:hover {
+    background: #DCE4EC;
+    filter: brightness(90%);
+  }
+
+  &:active {
+    filter: brightness(90%);
+    border: 2px solid ${colorPrimary};
+  }
+
+  &:hover {
+    &:focus {
+      background: #DCE4EC;
+      filter: brightness(90%);
+      border: 2px solid ${colorPrimary};
+    }
+  }
+
+  &:focus {
+    &:active {
+    filter: brightness(90%);
+    border: 2px solid ${colorPrimary};
+    }
+  }
 `;
 
 const ConfirmButton = styled(Button)`

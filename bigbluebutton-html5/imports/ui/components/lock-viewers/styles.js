@@ -9,7 +9,7 @@ import {
   mdPaddingX,
 } from '../../stylesheets/styled-components/general';
 import { fontSizeLarge, fontSizeBase, fontSizeSmall } from '/imports/ui/stylesheets/styled-components/typography';
-import { colorGray, colorGrayDark, colorGrayLabel, colorGrayLighter } from '../../stylesheets/styled-components/palette';
+import { colorGray, colorGrayDark, colorGrayLabel, colorGrayLighter, colorPrimary } from '../../stylesheets/styled-components/palette';
 import Modal from '/imports/ui/components/common/modal/simple/component';
 import Button from '/imports/ui/components/common/button/component';
 
@@ -141,6 +141,40 @@ const Actions = styled.div`
 
 const ButtonCancel = styled(Button)`
   margin: 0 0.25rem;
+  background: transparent;
+  color: ${colorGray};
+  border-radius: 4px;
+  box-shadow: none !important;
+
+  &:focus {
+    background: #DCE4EC;
+    border: 2px solid ${colorPrimary};
+  }
+
+  &:hover {
+    background: #DCE4EC;
+    filter: brightness(90%);
+  }
+
+  &:active {
+    filter: brightness(90%);
+    border: 2px solid ${colorPrimary};
+  }
+
+  &:hover {
+    &:focus {
+      background: #DCE4EC;
+      filter: brightness(90%);
+      border: 2px solid ${colorPrimary};
+    }
+  }
+
+  &:focus {
+    &:active {
+    filter: brightness(90%);
+    border: 2px solid ${colorPrimary};
+    }
+  }
 `;
 
 const ButtonApply = styled(Button)`
