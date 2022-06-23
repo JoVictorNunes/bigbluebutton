@@ -8,11 +8,13 @@ import {
   modalTitleFw,
 } from '/imports/ui/stylesheets/styled-components/typography';
 import {
-  colorPrimary,
-  colorGray,
-  colorGrayLighter,
   colorGrayLightest,
   colorText,
+  btnLinkBorder,
+  btnLinkColor,
+  btnLinkColorDarken,
+  btnLinkBg,
+  btnLinkBgDarken,
 } from '/imports/ui/stylesheets/styled-components/palette';
 
 const FullscreenModal = styled(Styled.BaseModal)`
@@ -63,37 +65,38 @@ const Content = styled.div`
 const DismissButton = styled(Button)`
   flex: 0 1 48%;
   background: transparent;
-  color: ${colorGray};
+  color: ${btnLinkColor};
   border-radius: 4px;
-  box-shadow: none !important;
+  border: 3px solid transparent;
 
   &:focus {
-    background: #DCE4EC;
-    border: 2px solid ${colorPrimary};
+    background: ${btnLinkBg};
+    box-shadow: 0 0 0 2px ${btnLinkBorder};
   }
 
   &:hover {
-    background: #DCE4EC;
-    filter: brightness(90%);
+    background: ${btnLinkBg};
+    color: ${btnLinkColorDarken};
   }
 
   &:active {
-    filter: brightness(90%);
-    border: 2px solid ${colorPrimary};
+    background: ${btnLinkBgDarken};
+    color: ${btnLinkColorDarken};
   }
 
   &:hover {
     &:focus {
-      background: #DCE4EC;
-      filter: brightness(90%);
-      border: 2px solid ${colorPrimary};
+      background: ${btnLinkBg};
+      box-shadow: 0 0 0 2px ${btnLinkBorder};
+      color: ${btnLinkColorDarken};
     }
   }
 
   &:focus {
     &:active {
-    filter: brightness(90%);
-    border: 2px solid ${colorPrimary};
+      background: ${btnLinkBgDarken};
+      box-shadow: 0 0 0 2px ${btnLinkBorder};
+      color: ${btnLinkColorDarken};
     }
   }
 `;

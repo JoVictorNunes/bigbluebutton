@@ -76,6 +76,12 @@ const btnMutedBorder = `var(--btn-muted-border, ${colorMutedBackground})`;
 const btnMutedColor = `var(--btn-muted-color, ${colorMuted})`;
 const btnMutedBg = `var(--btn-muted-bg, ${colorMutedBackground})`;
 
+const btnLinkBorder = `var(--btn-link-border, ${btnPrimaryBorder})`;
+const btnLinkColor = `var(--btn-link-color, hsl(210, 13%, 35%))`; // colorGray
+const btnLinkColorDarken = `var(--btn-link-color, hsl(210, 13%, 25%))`; // colorGray 90%
+const btnLinkBg = `var(--btn-link-bg, hsl(210, 30%, 89%))`; // #DCE4EC
+const btnLinkBgDarken = `var(--btn-link-bg, hsl(210, 30%, 79%))`; // #DCE4EC 90%
+
 const toolbarButtonColor = `var(--toolbar-button-color, ${btnDefaultColor})`;
 const userThumbnailBorder = `var(--user-thumbnail-border, ${colorGrayLight})`;
 const loaderBg = `var(--loader-bg, ${colorGrayDark})`;
@@ -209,4 +215,9 @@ export {
   toastWarningColor,
   toastWarningBg,
   webcamBackgroundColor,
+  btnLinkBorder,
+  btnLinkColor,
+  btnLinkColorDarken,
+  btnLinkBg,
+  btnLinkBgDarken,
 };
