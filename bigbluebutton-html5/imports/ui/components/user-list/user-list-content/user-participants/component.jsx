@@ -7,7 +7,6 @@ import UserListItemContainer from './user-list-item/container';
 import UserOptionsContainer from './user-options/container';
 import Settings from '/imports/ui/services/settings';
 import { injectIntl } from 'react-intl';
-import { Virtuoso } from 'react-virtuoso';
 
 const propTypes = {
   compact: PropTypes.bool,
@@ -207,7 +206,7 @@ class UserParticipants extends Component {
           }}
         >
           <span id="participants-destination" />
-          <Virtuoso
+          <Styled.VirtualizedList
             scrollerRef={(ref) => {
               if (ref !== null) {
                 this.listRef = ref;

@@ -5,7 +5,6 @@ import _ from 'lodash';
 import Styled from './styles';
 import ChatLogger from '/imports/ui/components/chat/chat-logger/ChatLogger';
 import TimeWindowChatItem from './time-window-chat-item/container';
-import { Virtuoso } from 'react-virtuoso';
 
 const propTypes = {
   scrollPosition: PropTypes.number,
@@ -234,7 +233,7 @@ class TimeWindowList extends PureComponent {
           aria-live="polite"
           ref={node => this.messageListWrapper = node}
         >
-          <Virtuoso
+          <Styled.MessageList
             ref={this.setListInstanceRef}
             scrollerRef={this.setListRef}
             defaultItemHeight={18}
