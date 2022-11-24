@@ -9,6 +9,7 @@ import ClickOutside from '/imports/ui/components/click-outside/component';
 import Styled from './styles';
 import { escapeHtml } from '/imports/utils/string-utils';
 import { isChatEnabled } from '/imports/ui/services/features';
+import EmojiList from '../emoji-list/component';
 
 const propTypes = {
   intl: PropTypes.object.isRequired,
@@ -70,6 +71,7 @@ const messages = defineMessages({
 const CHAT_CONFIG = Meteor.settings.public.chat;
 const AUTO_CONVERT_EMOJI = Meteor.settings.public.chat.autoConvertEmoji;
 const ENABLE_EMOJI_PICKER = Meteor.settings.public.chat.emojiPicker.enable;
+const EMOJI_COLON_REG = /:(?<emoji_key>\S+)$/;
 
 class MessageForm extends PureComponent {
   constructor(props) {
@@ -80,6 +82,8 @@ class MessageForm extends PureComponent {
       error: null,
       hasErrors: false,
       showEmojiPicker: false,
+      showEmojiList: false,
+      emojiKey: '',
     };
 
     this.handleMessageChange = this.handleMessageChange.bind(this);
@@ -141,9 +145,12 @@ class MessageForm extends PureComponent {
   }
 
   handleClickOutside() {
-    const { showEmojiPicker } = this.state;
+    const { showEmojiPicker, showEmojiList } = this.state;
     if (showEmojiPicker) {
       this.setState({ showEmojiPicker: false });
+    }
+    if (showEmojiList) {
+      this.setState({ showEmojiList: false });
     }
   }
 
@@ -201,6 +208,10 @@ class MessageForm extends PureComponent {
 
       this.handleSubmit(event);
     }
+
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      this.setState({ showEmojiList: false });
+    }
   }
 
   handleUserTyping(error) {
@@ -215,6 +226,10 @@ class MessageForm extends PureComponent {
       maxMessageLength,
     } = this.props;
 
+    const { showEmojiList } = this.state;
+
+    const cursor = this.textarea.selectionStart;
+
     let message = null;
     let error = null;
 
@@ -222,6 +237,20 @@ class MessageForm extends PureComponent {
       message = checkText(e.target.value);
     } else {
       message = e.target.value;
+    }
+
+    const chunks = [message.slice(0, cursor), message.slice(cursor)];
+
+    if (EMOJI_COLON_REG.test(chunks[0])) {
+      const emoji_key = EMOJI_COLON_REG.exec(chunks[0]).groups.emoji_key || '';
+
+      this.setState({
+        showEmojiPicker: false,
+        showEmojiList: true,
+        emojiKey: emoji_key.toLowerCase(),
+      });
+    } else if (showEmojiList) {
+      this.setState({ showEmojiList: false });
     }
 
     if (message.length > maxMessageLength) {
@@ -297,6 +326,31 @@ class MessageForm extends PureComponent {
     return null;
   }
 
+  renderEmojiList() {
+    const { showEmojiList, emojiKey } = this.state;
+
+    if (showEmojiList) {
+      return (
+        <EmojiList
+          emojiKey={emojiKey}
+          onSelect={(emoji) => {
+            const { message } = this.state;
+            const cursor = this.textarea.selectionStart;
+            const chunks = [message.slice(0, cursor), message.slice(cursor)];
+            chunks[0] = chunks[0].replace(EMOJI_COLON_REG, emoji.native);
+
+            this.setState({ message: chunks.join(''), showEmojiList: false }, () => {
+              this.textarea.focus();
+              this.textarea.setSelectionRange(chunks[0].length, chunks[0].length);
+            });
+          }}
+        />
+      );
+    }
+
+    return null;
+  }
+
   renderEmojiButton() {
     const { intl } = this.props;
 
@@ -304,6 +358,7 @@ class MessageForm extends PureComponent {
       <Styled.EmojiButton
         onClick={() => this.setState((prevState) => ({
           showEmojiPicker: !prevState.showEmojiPicker,
+          showEmojiList: !prevState.showEmojiPicker ? false : !prevState.showEmojiList,
         }))}
         icon="happy"
         color="light"
@@ -337,6 +392,7 @@ class MessageForm extends PureComponent {
         onSubmit={this.handleSubmit}
       >
         {this.renderEmojiPicker()}
+        {this.renderEmojiList()}
         <Styled.Wrapper>
           <Styled.Input
             id="message-input"
