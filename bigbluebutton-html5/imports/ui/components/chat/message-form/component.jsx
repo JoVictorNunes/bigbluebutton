@@ -209,7 +209,7 @@ class MessageForm extends PureComponent {
       this.handleSubmit(event);
     }
 
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    if (e.key.startsWith('Arrow')) {
       this.setState({ showEmojiList: false });
     }
   }

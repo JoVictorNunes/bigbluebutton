@@ -20,7 +20,7 @@ const EmojiList = (props) => {
 
   if (emojis && emojis.length > 0) {
     return (
-      <Styled.EmojiList>
+      <Styled.EmojiList as="ul">
         {emojis.map((emoji) => (
           <li
             key={emoji.id}
