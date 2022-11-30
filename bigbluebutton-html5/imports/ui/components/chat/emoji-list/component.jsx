@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Emoji, emojiIndex } from 'emoji-mart';
 import Styled from './styles';
@@ -13,7 +13,10 @@ const propTypes = {
 
 const defaultProps = {
   emojiKey: '',
+  focusedEmojiListItem: 0,
   onSelect: () => {},
+  onUpdate: () => {},
+  setFocusedItem: () => {},
 };
 
 class EmojiList extends React.Component {
@@ -50,9 +53,9 @@ class EmojiList extends React.Component {
 
     if (isOutOfView) {
       if (prevFocusedEmojiListItem && prevFocusedEmojiListItem < focusedEmojiListItem) {
-        focusedItemRef.scrollIntoView(false);
+        focusedItemRef?.scrollIntoView?.(false);
       } else if ( prevFocusedEmojiListItem && prevFocusedEmojiListItem > focusedEmojiListItem) {
-        focusedItemRef.scrollIntoView();
+        focusedItemRef?.scrollIntoView?.();
       }
     }
   }
