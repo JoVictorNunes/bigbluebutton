@@ -71,6 +71,7 @@ const messages = defineMessages({
 const CHAT_CONFIG = Meteor.settings.public.chat;
 const AUTO_CONVERT_EMOJI = Meteor.settings.public.chat.autoConvertEmoji;
 const ENABLE_EMOJI_PICKER = Meteor.settings.public.chat.emojiPicker.enable;
+const ENABLE_EMOJI_LIST = CHAT_CONFIG.emojiList;
 const EMOJI_COLON_REG = /:(?<emoji_key>\S+)$/;
 
 class MessageForm extends PureComponent {
@@ -82,8 +83,11 @@ class MessageForm extends PureComponent {
       error: null,
       hasErrors: false,
       showEmojiPicker: false,
+      // Emoji list related.
       showEmojiList: false,
       emojiKey: '',
+      focusedEmojiListItem: 0,
+      selectedEmoji: null,
     };
 
     this.handleMessageChange = this.handleMessageChange.bind(this);
@@ -92,6 +96,7 @@ class MessageForm extends PureComponent {
     this.setMessageHint = this.setMessageHint.bind(this);
     this.handleUserTyping = _.throttle(this.handleUserTyping.bind(this), 2000, { trailing: false });
     this.typingIndicator = CHAT_CONFIG.typingIndicator.enabled;
+    this.applyEmoji = this.applyEmoji.bind(this);
   }
 
   componentDidMount() {
@@ -197,6 +202,8 @@ class MessageForm extends PureComponent {
   }
 
   handleMessageKeyDown(e) {
+    const { showEmojiList, selectedEmoji } = this.state;
+
     // TODO Prevent send message pressing enter on mobile and/or virtual keyboard
     if (e.keyCode === 13 && !e.shiftKey) {
       e.preventDefault();
@@ -206,11 +213,32 @@ class MessageForm extends PureComponent {
         cancelable: true,
       });
 
-      this.handleSubmit(event);
+      if (showEmojiList) {
+        this.applyEmoji(selectedEmoji);
+      } else {
+        this.handleSubmit(event);
+      }
+
+      return;
     }
 
-    if (e.key.startsWith('Arrow')) {
-      this.setState({ showEmojiList: false });
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      this.setState({
+        showEmojiList: false,
+        selectedEmoji: null,
+        focusedEmojiListItem: 0,
+      });
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      this.setState(({ focusedEmojiListItem: v }) => ({ focusedEmojiListItem: v - 1 }));
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this.setState(({ focusedEmojiListItem: v }) => ({ focusedEmojiListItem: v + 1 }));
     }
   }
 
@@ -233,7 +261,7 @@ class MessageForm extends PureComponent {
     let message = null;
     let error = null;
 
-    if (AUTO_CONVERT_EMOJI) {
+    if (AUTO_CONVERT_EMOJI && !ENABLE_EMOJI_LIST) {
       message = checkText(e.target.value);
     } else {
       message = e.target.value;
@@ -250,7 +278,12 @@ class MessageForm extends PureComponent {
         emojiKey: emoji_key.toLowerCase(),
       });
     } else if (showEmojiList) {
-      this.setState({ showEmojiList: false });
+      this.setState({
+        emojiKey: '',
+        focusedEmojiListItem: 0,
+        showEmojiList: false,
+        selectedEmoji: null,
+      });
     }
 
     if (message.length > maxMessageLength) {
@@ -326,24 +359,34 @@ class MessageForm extends PureComponent {
     return null;
   }
 
+  applyEmoji(emoji) {
+    const { message } = this.state;
+    const cursor = this.textarea.selectionStart;
+    const chunks = [message.slice(0, cursor), message.slice(cursor)];
+    chunks[0] = chunks[0].replace(EMOJI_COLON_REG, emoji.native);
+
+    this.setState({
+      message: chunks.join(''),
+      showEmojiList: false,
+      selectedEmoji: null,
+      focusedEmojiListItem: 0,
+    }, () => {
+      this.textarea.focus();
+      this.textarea.setSelectionRange(chunks[0].length, chunks[0].length);
+    });
+  }
+
   renderEmojiList() {
-    const { showEmojiList, emojiKey } = this.state;
+    const { showEmojiList, emojiKey, focusedEmojiListItem } = this.state;
 
     if (showEmojiList) {
       return (
         <EmojiList
           emojiKey={emojiKey}
-          onSelect={(emoji) => {
-            const { message } = this.state;
-            const cursor = this.textarea.selectionStart;
-            const chunks = [message.slice(0, cursor), message.slice(cursor)];
-            chunks[0] = chunks[0].replace(EMOJI_COLON_REG, emoji.native);
-
-            this.setState({ message: chunks.join(''), showEmojiList: false }, () => {
-              this.textarea.focus();
-              this.textarea.setSelectionRange(chunks[0].length, chunks[0].length);
-            });
-          }}
+          focusedEmojiListItem={focusedEmojiListItem}
+          onSelect={this.applyEmoji}
+          onUpdate={(emoji) => this.setState({ selectedEmoji: emoji })}
+          setFocusedItem={(item) => this.setState({ focusedEmojiListItem: item })}
         />
       );
     }

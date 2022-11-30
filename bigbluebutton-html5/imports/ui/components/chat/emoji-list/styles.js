@@ -35,8 +35,21 @@ const EmojiList = styled(ScrollboxVertical)`
     color: ${colorPrimary};
     cursor: pointer;
   }
+
+  ${({ focused }) => focused && `
+    background-color: ${colorOffWhite};
+    color: ${colorPrimary};
+  `}
+`;
+
+const EmojiItem = styled.li`
+  ${({ focused }) => focused && `
+    background-color: ${colorOffWhite};
+    color: ${colorPrimary};
+  `}
 `;
 
 export default {
   EmojiList,
+  EmojiItem,
 };
