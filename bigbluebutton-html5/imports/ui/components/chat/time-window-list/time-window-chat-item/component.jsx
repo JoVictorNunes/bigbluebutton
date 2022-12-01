@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { FormattedTime, defineMessages, injectIntl } from 'react-intl';
 import _ from 'lodash';
@@ -6,6 +7,7 @@ import UserAvatar from '/imports/ui/components/user-avatar/component';
 import ChatLogger from '/imports/ui/components/chat/chat-logger/ChatLogger';
 import PollService from '/imports/ui/components/poll/service';
 import Styled from './styles';
+import ClickOutside from '/imports/ui/components/click-outside/component';
 
 const CHAT_CONFIG = Meteor.settings.public.chat;
 const CHAT_CLEAR_MESSAGE = CHAT_CONFIG.system_messages_keys.chat_clear;
@@ -63,7 +65,10 @@ class TimeWindowChatItem extends PureComponent {
     super(props);
     this.state = {
       forcedUpdateCount: 0,
+      showReactions: false,
+      showReactionsButton: false,
     };
+    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -137,6 +142,63 @@ class TimeWindowChatItem extends PureComponent {
     );
   }
 
+  handleEmojiSelect(emoji) {
+    this.setState({
+      showReactions: false,
+      showReactionsButton,
+    });
+
+    console.log(emoji);
+  }
+
+  renderReactionsButton() {
+    const { intl } = this.props;
+
+    return (
+      <Styled.EmojiButton
+        onClick={() => this.setState({
+          showReactions: true,
+          showReactionsButton: false,
+        })}
+        icon="happy"
+        color="light"
+        ghost
+        type="button"
+        circle
+        hideLabel
+        label={''}
+        data-test="emojiPickerButton"
+      />
+    );
+  }
+
+  renderEmojiPicker() {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const anchor = this.itemRef.getBoundingClientRect();
+
+    console.log(anchor);
+
+    const { right: left, top } = anchor;
+
+    return ReactDOM.createPortal(
+      <ClickOutside onClick={this.handleClickOutside}>
+        <Styled.EmojiPickerWrapper {...{ left, top }}>
+          <Styled.EmojiPicker
+            onEmojiSelect={(emojiObject) => this.handleEmojiSelect(emojiObject)}
+            showPreview={false}
+            showSkinTones={false}
+          />
+        </Styled.EmojiPickerWrapper>
+      </ClickOutside>,
+      container,
+    );
+  }
+
+  handleClickOutside() {
+    this.setState({ showReactions: false });
+  }
+
   renderMessageItem() {
     const {
       timestamp,
@@ -155,6 +217,7 @@ class TimeWindowChatItem extends PureComponent {
       isOnline,
       isSystemSender,
     } = this.props;
+    const { showReactions, showReactionsButton } = this.state;
 
     const dateTime = new Date(timestamp);
     ChatLogger.debug('TimeWindowChatItem::renderMessageItem', this.props);
@@ -165,6 +228,8 @@ class TimeWindowChatItem extends PureComponent {
       <Styled.Item
         key={`time-window-${messageKey}`}
         ref={element => this.itemRef = element}
+        onMouseEnter={() => { this.setState({ showReactionsButton: showReactions ? false : true }); }}
+        onMouseLeave={() => { this.setState({ showReactionsButton: false }); }}
       >
         <Styled.Wrapper isSystemSender={isSystemSender}>
           <Styled.AvatarWrapper>
@@ -220,6 +285,8 @@ class TimeWindowChatItem extends PureComponent {
             </Styled.Messages>
           </Styled.Content>
         </Styled.Wrapper>
+        {showReactionsButton && this.renderReactionsButton()}
+        {showReactions && this.renderEmojiPicker()}
       </Styled.Item>
     );
   }

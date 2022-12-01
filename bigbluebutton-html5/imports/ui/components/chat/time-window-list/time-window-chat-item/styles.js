@@ -3,6 +3,7 @@ import {
   borderRadius,
   borderSize,
   chatPollMarginSm,
+  smPaddingX,
 } from '/imports/ui/stylesheets/styled-components/general';
 import { lineHeightComputed, fontSizeBase, btnFontWeight } from '/imports/ui/stylesheets/styled-components/typography';
 import {
@@ -20,6 +21,8 @@ import {
 } from '/imports/ui/stylesheets/styled-components/palette';
 import MessageChatItem from './message-chat-item/component';
 import Icon from '/imports/ui/components/common/icon/component';
+import Button from '/imports/ui/components/common/button/component';
+import EmojiPickerComponent from '/imports/ui/components/emoji-picker/component';
 
 const Item = styled.div`
   padding: calc(${lineHeightComputed} / 4) 0 calc(${lineHeightComputed} / 2) 0;
@@ -28,6 +31,10 @@ const Item = styled.div`
   [dir="rtl"] & {
     direction: rtl;
   }
+  &:hover {
+    background-color: gray;
+  }
+  position: relative;
 `;
 
 const Messages = styled.div`
@@ -224,6 +231,52 @@ const PresentationChatItem = styled(MessageChatItem)`
   word-wrap: break-word;
 `;
 
+const Reactions = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: red;
+`;
+
+const EmojiButton = styled(Button)`
+  margin: 0 0 0 ${smPaddingX};
+  align-self: center;
+  font-size: 0.5rem;
+
+  [dir="rtl"]  & {
+    margin: 0 ${smPaddingX} 0 0;
+    -webkit-transform: scale(-1, 1);
+    -moz-transform: scale(-1, 1);
+    -ms-transform: scale(-1, 1);
+    -o-transform: scale(-1, 1);
+    transform: scale(-1, 1);
+  }
+`;
+
+const EmojiPickerWrapper = styled.div`
+  position: absolute;
+  left: ${({ left }) => left}px;
+  top: ${({ top }) => top}px;
+  z-index: 999;
+  .emoji-mart {
+    max-width: 100% !important;
+  }
+  .emoji-mart-anchor {
+    cursor: pointer;
+  }
+  .emoji-mart-emoji {
+    cursor: pointer !important;
+  }
+  .emoji-mart-category-list {
+    span {
+      cursor: pointer !important;
+      display: inline-block !important;
+    }
+  }
+`;
+
+const EmojiPicker = styled(EmojiPickerComponent)``;
+
 export default {
   Item,
   Messages,
@@ -240,4 +293,8 @@ export default {
   PollMessageChatItem,
   PresentationChatItem,
   PresentationWrapper,
+  Reactions,
+  EmojiButton,
+  EmojiPickerWrapper,
+  EmojiPicker,
 };
