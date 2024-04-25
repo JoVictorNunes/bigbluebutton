@@ -1,7 +1,6 @@
-// @ts-nocheck
-/* eslint-disable */
 import { useEffect } from 'react';
 import { useSubscription } from '@apollo/client';
+import logger from '/imports/startup/client/logger';
 import {
   VIDEO_STREAMS_SUBSCRIPTION,
   VideoStreamsResponse,
@@ -12,7 +11,12 @@ const VideoStreamAdapter: React.FC = () => {
   const { data, loading, error } = useSubscription<VideoStreamsResponse>(VIDEO_STREAMS_SUBSCRIPTION);
 
   useEffect(() => {
-    if (loading || error) return;
+    if (loading) return;
+
+    if (error) {
+      logger.error(`Video streams subscription failed. ${error.name}: ${error.message}`, error);
+      return;
+    }
 
     if (!data) {
       setStreams([]);
@@ -28,7 +32,8 @@ const VideoStreamAdapter: React.FC = () => {
       pin: user.pinned,
       floor: voice?.floor || false,
       lastFloorTime: voice?.lastFloorTime || '0',
-      isUserModerator: user.isModerator,
+      isModerator: user.isModerator,
+      type: 'stream' as const,
     }));
 
     setStreams(streams);
