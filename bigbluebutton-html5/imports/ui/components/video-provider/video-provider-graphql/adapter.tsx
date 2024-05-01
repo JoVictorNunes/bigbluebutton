@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSubscription } from '@apollo/client';
 import logger from '/imports/startup/client/logger';
 import {
@@ -6,8 +6,13 @@ import {
   VideoStreamsResponse,
 } from './queries';
 import { setStreams } from './state';
+import { AdapterProps } from '../../components-data/graphqlToMiniMongoAdapterManager/component';
 
-const VideoStreamAdapter: React.FC = () => {
+const VideoStreamAdapter: React.FC<AdapterProps> = ({
+  onReady,
+  children,
+}) => {
+  const ready = useRef(false);
   const { data, loading, error } = useSubscription<VideoStreamsResponse>(VIDEO_STREAMS_SUBSCRIPTION);
 
   useEffect(() => {
@@ -39,7 +44,14 @@ const VideoStreamAdapter: React.FC = () => {
     setStreams(streams);
   }, [data]);
 
-  return null;
+  useEffect(() => {
+    if (!ready.current && !loading) {
+      ready.current = true;
+      onReady('VideoStreamAdapter');
+    }
+  }, [loading]);
+
+  return children;
 };
 
 export default VideoStreamAdapter;
