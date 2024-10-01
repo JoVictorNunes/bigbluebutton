@@ -14,6 +14,10 @@ import {
 } from './styles';
 import { ChatMessageType } from '/imports/ui/core/enums/chat';
 import MessageReadConfirmation from './message-read-confirmation/component';
+import ChatMessageToolbar from './message-toolbar/component';
+// import ChatMessageReplied from './message-replied/component';
+import ChatMessageReactions from './message-reactions/component';
+import ChatMessageReplied from './message-replied/component';
 
 interface ChatMessageProps {
   message: Message;
@@ -74,6 +78,8 @@ const ChatMesssage: React.FC<ChatMessageProps> = ({
     }
   }, [message, messageRef]);
   const messageContentRef = React.createRef<HTMLDivElement>();
+  const [isToolbarOpen, setIsToolbarOpen] = React.useState(false);
+  const [reactions, setReactions] = React.useState<{ id: string, native: string }[]>([]);
 
   useEffect(() => {
     setMessagesRequestedFromPlugin((messages) => {
@@ -250,38 +256,69 @@ const ChatMesssage: React.FC<ChatMessageProps> = ({
     }
   }, []);
   return (
-    <ChatWrapper
-      isSystemSender={isSystemSender}
-      sameSender={sameSender}
-      ref={messageRef}
-      isPresentationUpload={messageContent.isPresentationUpload}
-      isCustomPluginMessage={isCustomPluginMessage}
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+      }}
     >
-      {((!message?.user || !sameSender) && (
-        message.messageType !== ChatMessageType.USER_AWAY_STATUS_MSG
+      <ChatMessageReplied
+        // chatId="123"
+        // messageId="456"
+        message="Teste"
+        username="Joao"
+      />
+      <ChatWrapper
+        isSystemSender={isSystemSender}
+        sameSender={sameSender}
+        ref={messageRef}
+        isPresentationUpload={messageContent.isPresentationUpload}
+        isCustomPluginMessage={isCustomPluginMessage}
+        onPointerEnter={() => setIsToolbarOpen(true)}
+        onPointerLeave={() => setIsToolbarOpen(false)}
+      >
+        {isToolbarOpen && (
+        <ChatMessageToolbar
+          messageId={message.messageId}
+          chatId={message.chatId}
+          username={message.user.name}
+          message={message.message}
+          onEmojiSelected={(emoji) => {
+            setReactions((prev) => {
+              return [
+                ...prev,
+                emoji,
+              ];
+            });
+          }}
+        />
+        )}
+        <ChatMessageReactions reactions={reactions} />
+        {((!message?.user || !sameSender) && (
+          message.messageType !== ChatMessageType.USER_AWAY_STATUS_MSG
         && message.messageType !== ChatMessageType.API
         && message.messageType !== ChatMessageType.CHAT_CLEAR
         && !isCustomPluginMessage)
-      ) && (
-      <ChatAvatar
-        avatar={message.user?.avatar}
-        color={messageContent.color}
-        moderator={messageContent.isModerator}
-      >
-        {!messageContent.avatarIcon ? (
-          !message.user || (message.user?.avatar.length === 0 ? messageContent.name.toLowerCase().slice(0, 2) : '')
-        ) : (
-          <i className={messageContent.avatarIcon} />
+        ) && (
+        <ChatAvatar
+          avatar={message.user?.avatar}
+          color={messageContent.color}
+          moderator={messageContent.isModerator}
+        >
+          {!messageContent.avatarIcon ? (
+            !message.user || (message.user?.avatar.length === 0 ? messageContent.name.toLowerCase().slice(0, 2) : '')
+          ) : (
+            <i className={messageContent.avatarIcon} />
+          )}
+        </ChatAvatar>
         )}
-      </ChatAvatar>
-      )}
-      <ChatContent
-        ref={messageContentRef}
-        sameSender={message?.user ? sameSender : false}
-        isCustomPluginMessage={isCustomPluginMessage}
-        data-chat-message-id={message?.messageId}
-      >
-        {message.messageType !== ChatMessageType.CHAT_CLEAR
+        <ChatContent
+          ref={messageContentRef}
+          sameSender={message?.user ? sameSender : false}
+          isCustomPluginMessage={isCustomPluginMessage}
+          data-chat-message-id={message?.messageId}
+        >
+          {message.messageType !== ChatMessageType.CHAT_CLEAR
           && !isCustomPluginMessage
           && (
             <ChatMessageHeader
@@ -291,16 +328,17 @@ const ChatMesssage: React.FC<ChatMessageProps> = ({
               dateTime={dateTime}
             />
           )}
-        <MessageItemWrapper>
-          {messageContent.component}
-          {messageReadFeedbackEnabled && (
+          <MessageItemWrapper>
+            {messageContent.component}
+            {messageReadFeedbackEnabled && (
             <MessageReadConfirmation
               message={message}
             />
-          )}
-        </MessageItemWrapper>
-      </ChatContent>
-    </ChatWrapper>
+            )}
+          </MessageItemWrapper>
+        </ChatContent>
+      </ChatWrapper>
+    </div>
   );
 };
 

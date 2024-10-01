@@ -14,6 +14,7 @@ import {
   colorWhite,
   userListBg,
   colorSuccess,
+  colorOffWhite,
 } from '/imports/ui/stylesheets/styled-components/palette';
 
 import Header from '/imports/ui/components/common/control-header/component';
@@ -74,6 +75,9 @@ export const ChatWrapper = styled.div<ChatWrapperProps>`
     margin: 0;
     padding: 0;
   `}
+  &:hover {
+    background-color: ${colorOffWhite};
+  }
 `;
 
 export const ChatContent = styled.div<ChatContentProps>`
@@ -112,7 +116,6 @@ export const ChatAvatar = styled.div<ChatAvatarProps>`
   ${({ color }) => css`
     background-color: ${color};
   `}
-  }
 
   &:after,
   &:before {
