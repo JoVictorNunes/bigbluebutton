@@ -11,6 +11,7 @@ import {
   ChatContent,
   ChatAvatar,
   MessageItemWrapper,
+  Container,
 } from './styles';
 import { ChatMessageType } from '/imports/ui/core/enums/chat';
 import MessageReadConfirmation from './message-read-confirmation/component';
@@ -18,6 +19,7 @@ import ChatMessageToolbar from './message-toolbar/component';
 // import ChatMessageReplied from './message-replied/component';
 import ChatMessageReactions from './message-reactions/component';
 import ChatMessageReplied from './message-replied/component';
+import { useStorageKey } from '/imports/ui/services/storage/hooks';
 
 interface ChatMessageProps {
   message: Message;
@@ -61,6 +63,7 @@ function isInViewport(el: HTMLDivElement) {
 }
 
 const messageRef = React.createRef<HTMLDivElement>();
+const containerRef = React.createRef<HTMLDivElement>();
 
 const ChatMesssage: React.FC<ChatMessageProps> = ({
   previousMessage,
@@ -80,6 +83,7 @@ const ChatMesssage: React.FC<ChatMessageProps> = ({
   const messageContentRef = React.createRef<HTMLDivElement>();
   const [isToolbarOpen, setIsToolbarOpen] = React.useState(false);
   const [reactions, setReactions] = React.useState<{ id: string, native: string }[]>([]);
+  const shouldFocus = useStorageKey('ChatFocusMessageRequest', 'in-memory') === message.messageSequence;
 
   useEffect(() => {
     setMessagesRequestedFromPlugin((messages) => {
@@ -109,6 +113,12 @@ const ChatMesssage: React.FC<ChatMessageProps> = ({
       scrollRef?.current?.removeEventListener('scrollend', callbackFunction);
     };
   }, [message, messageRef, markMessageAsSeenOnScrollEnd]);
+
+  useEffect(() => {
+    if (shouldFocus) {
+      containerRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [shouldFocus]);
 
   if (!message) return null;
   const pluginMessageNotCustom = (previousMessage?.messageType !== ChatMessageType.PLUGIN
@@ -256,18 +266,17 @@ const ChatMesssage: React.FC<ChatMessageProps> = ({
     }
   }, []);
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-      }}
+    <Container
+      ref={containerRef}
+      $animate={shouldFocus}
     >
-      <ChatMessageReplied
-        // chatId="123"
-        // messageId="456"
-        message="Teste"
-        username="Joao"
-      />
+      {message.replyToMessage && (
+        <ChatMessageReplied
+          message={message.replyToMessage.message}
+          username={message.replyToMessage.user.name}
+          sequence={message.replyToMessage.messageSequence}
+        />
+      )}
       <ChatWrapper
         isSystemSender={isSystemSender}
         sameSender={sameSender}
@@ -338,7 +347,7 @@ const ChatMesssage: React.FC<ChatMessageProps> = ({
           </MessageItemWrapper>
         </ChatContent>
       </ChatWrapper>
-    </div>
+    </Container>
   );
 };
 

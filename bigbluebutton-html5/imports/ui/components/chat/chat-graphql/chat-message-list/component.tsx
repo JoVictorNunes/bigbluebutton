@@ -159,6 +159,20 @@ const ChatMessageList: React.FC<ChatListProps> = ({
     }
   }, [lastMessageCreatedAt]);
 
+  useEffect(() => {
+    const handler = (e: Event) => {
+      if (e instanceof CustomEvent) {
+        setUserLoadedBackUntilPage(Math.ceil(e.detail.sequence / PAGE_SIZE) - 1);
+      }
+    };
+
+    window.addEventListener('ChatFocusMessageRequest', handler);
+
+    return () => {
+      window.removeEventListener('ChatFocusMessageRequest', handler);
+    };
+  }, []);
+
   const markMessageAsSeen = useCallback((message: Message) => {
     if (new Date(message.createdAt).getTime() > new Date((lastMessageCreatedAt || 0)).getTime()) {
       dispatchLastSeen();

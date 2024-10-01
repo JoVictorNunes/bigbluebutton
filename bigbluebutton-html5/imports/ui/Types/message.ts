@@ -15,4 +15,12 @@ export interface Message {
   messageMetadata: string;
   recipientHasSeen: string;
   user: User;
+  messageSequence: number;
+  replyToMessage: {
+    messageSequence: number;
+    message: string;
+    user: {
+      name: string;
+    };
+  } | null;
 }

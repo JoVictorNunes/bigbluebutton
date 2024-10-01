@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import {
-  colorBlueLight,
   colorOffWhite,
+  colorWarning,
 } from '/imports/ui/stylesheets/styled-components/palette';
 
 const Container = styled.div`
   border-radius: 4px;
-  border-left: 4px solid ${colorBlueLight};
+  border-left: 4px solid ${colorWarning};
   background-color: ${colorOffWhite};
   padding: 6px;
   position: relative;
@@ -25,7 +25,7 @@ const Typography = styled.div`
 
 const Username = styled(Typography)`
   font-weight: bold;
-  color: ${colorBlueLight};
+  color: ${colorWarning};
   margin-bottom: 6px;
 `;
 

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 import {
   borderSize,
@@ -174,11 +174,34 @@ export const ChatAvatar = styled.div<ChatAvatarProps>`
   justify-content: center;
   align-items:center;
   // ================ content ================
-  
+
   & .react-loading-skeleton {
     height: 2.25rem;
     width: 2.25rem;
   }
+`;
+
+const Faded = keyframes`
+  0% {
+    background-color: ${colorOffWhite};
+  }
+  90% {
+    background-color: ${colorOffWhite};
+  }
+  100% {
+    background-color: unset;
+  }
+`;
+
+export const Container = styled.div<{ $animate: boolean }>`
+  display: flex;
+  flex-direction: column;
+  animation-duration: 4s;
+  animation-timing-function: linear;
+
+  ${({ $animate }) => $animate && css`
+    animation-name: ${Faded};
+  `}
 `;
 
 export const MessageItemWrapper = styled.div`
