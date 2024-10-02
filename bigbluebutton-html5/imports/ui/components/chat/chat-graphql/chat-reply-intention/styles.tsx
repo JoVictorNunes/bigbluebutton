@@ -10,8 +10,6 @@ const Container = styled.div<{ $hidden: boolean; $animations: boolean }>`
   border-left: 4px solid ${colorBlueLight};
   background-color: ${colorOffWhite};
   position: relative;
-  margin-right: 0.75rem;
-  margin-bottom: 0.25rem;
   overflow: hidden;
 
   ${({ $hidden }) => ($hidden
@@ -21,6 +19,8 @@ const Container = styled.div<{ $hidden: boolean; $animations: boolean }>`
     : css`
         height: 4rem;
         padding: 6px;
+        margin-right: 0.75rem;
+        margin-bottom: 0.25rem;
       `
   )}
 

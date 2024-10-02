@@ -287,13 +287,14 @@ const ChatMessageForm: React.FC<ChatMessageFormProps> = ({
     const handler = (e: Event) => {
       if (e instanceof CustomEvent) {
         setRepliedMessageId(e.detail.messageId);
+        textAreaRef.current?.textarea.focus();
       }
     };
 
-    window.addEventListener('ChatReplyIntention', handler);
+    window.addEventListener(ChatEvents.CHAT_REPLY_INTENTION, handler);
 
     return () => {
-      window.removeEventListener('ChatReplyIntention', handler);
+      window.removeEventListener(ChatEvents.CHAT_REPLY_INTENTION, handler);
     };
   }, []);
 
@@ -323,7 +324,7 @@ const ChatMessageForm: React.FC<ChatMessageFormProps> = ({
         });
 
         window.dispatchEvent(
-          new CustomEvent('ChatReplyIntention', {
+          new CustomEvent(ChatEvents.CHAT_REPLY_INTENTION, {
             detail: {
               username: undefined,
               message: undefined,

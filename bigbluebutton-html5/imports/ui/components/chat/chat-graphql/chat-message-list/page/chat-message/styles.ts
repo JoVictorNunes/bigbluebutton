@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import {
   borderSize,
@@ -75,9 +75,12 @@ export const ChatWrapper = styled.div<ChatWrapperProps>`
     margin: 0;
     padding: 0;
   `}
-  &:hover {
-    background-color: ${colorOffWhite};
-  }
+  ${({ sameSender }) => !sameSender && `
+    &:hover {
+      background-color: ${colorOffWhite};
+    }
+    border-radius: 6px;
+  `}
 `;
 
 export const ChatContent = styled.div<ChatContentProps>`
@@ -88,6 +91,13 @@ export const ChatContent = styled.div<ChatContentProps>`
   ${({ sameSender, isCustomPluginMessage }) => sameSender
     && !isCustomPluginMessage && `
     margin-left: 2.6rem;
+  `}
+
+  ${({ sameSender }) => sameSender && `
+    &:hover {
+      background-color: ${colorOffWhite};
+    }
+    border-radius: 6px;
   `}
 `;
 
@@ -181,27 +191,9 @@ export const ChatAvatar = styled.div<ChatAvatarProps>`
   }
 `;
 
-const Faded = keyframes`
-  0% {
-    background-color: ${colorOffWhite};
-  }
-  90% {
-    background-color: ${colorOffWhite};
-  }
-  100% {
-    background-color: unset;
-  }
-`;
-
-export const Container = styled.div<{ $animate: boolean }>`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  animation-duration: 4s;
-  animation-timing-function: linear;
-
-  ${({ $animate }) => $animate && css`
-    animation-name: ${Faded};
-  `}
 `;
 
 export const MessageItemWrapper = styled.div`

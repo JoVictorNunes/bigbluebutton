@@ -1,18 +1,15 @@
 import styled from 'styled-components';
-import {
-  colorOffWhite,
-  colorWarning,
-} from '/imports/ui/stylesheets/styled-components/palette';
+import { colorOffWhite } from '/imports/ui/stylesheets/styled-components/palette';
 
-const Container = styled.div`
+const Container = styled.div<{ $userColor: string }>`
   border-radius: 4px;
-  border-left: 4px solid ${colorWarning};
+  border-left: 4px solid ${({ $userColor }) => $userColor};
   background-color: ${colorOffWhite};
   padding: 6px;
   position: relative;
-  margin-right: 0.75rem;
-  margin-bottom: 0.25rem;
+  margin: 0.25rem 0 0.25rem 2.6rem;
   overflow: hidden;
+  cursor: pointer;
 `;
 
 const Typography = styled.div`
@@ -23,9 +20,9 @@ const Typography = styled.div`
   overflow: hidden;
 `;
 
-const Username = styled(Typography)`
+const Username = styled(Typography)<{ $userColor: string }>`
   font-weight: bold;
-  color: ${colorWarning};
+  color: ${({ $userColor }) => $userColor};
   margin-bottom: 6px;
 `;
 

@@ -18,6 +18,7 @@ export const CHAT_MESSAGE_PUBLIC_SUBSCRIPTION = gql`
         message
         user {
           name
+          color
         }
       }
       messageType

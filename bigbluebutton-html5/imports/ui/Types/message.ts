@@ -21,6 +21,7 @@ export interface Message {
     message: string;
     user: {
       name: string;
+      color: string;
     };
   } | null;
 }

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   colorGrayLighter,
   colorOffWhite,
@@ -8,20 +8,33 @@ import { borderRadius, smPaddingX } from '/imports/ui/stylesheets/styled-compone
 import EmojiPickerComponent from '/imports/ui/components/emoji-picker/component';
 import Button from '/imports/ui/components/common/button/component';
 
-const Container = styled.div`
+const Container = styled.div<{ $sequence: number }>`
   height: calc(1.5rem + 12px);
   line-height: calc(1.5rem + 8px);
   max-width: 184px;
   overflow: hidden;
-  display: flex;
+  display: none;
   position: absolute;
   right: 0;
-  border: 2px solid ${colorOffWhite};
+  border: 1px solid ${colorOffWhite};
   border-radius: 8px;
-  padding: 4px;
-  top: 0;
-  transform: translateY(-50%);
+  padding: 1px;
   background-color: ${colorWhite};
+
+  #chat-message-wrapper:hover & {
+    display: flex;
+  }
+
+  ${({ $sequence }) => (($sequence === 1)
+    ? css`
+      bottom: 0;
+      transform: translateY(50%);
+    `
+    : css`
+      top: 0;
+      transform: translateY(-50%);
+    `)
+}
 `;
 
 const EmojiPickerWrapper = styled.div`

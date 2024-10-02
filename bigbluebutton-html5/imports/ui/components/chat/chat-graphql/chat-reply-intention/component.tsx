@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Styled from './styles';
 import useSettings from '/imports/ui/services/settings/hooks/useSettings';
 import { SETTINGS } from '/imports/ui/services/settings/enums';
+import { ChatEvents } from '/imports/ui/core/enums/chat';
 
 const ChatReplyIntention = () => {
   const [username, setUsername] = useState<string>();
@@ -15,10 +16,10 @@ const ChatReplyIntention = () => {
       }
     };
 
-    window.addEventListener('ChatReplyIntention', handler);
+    window.addEventListener(ChatEvents.CHAT_REPLY_INTENTION, handler);
 
     return () => {
-      window.removeEventListener('ChatReplyIntention', handler);
+      window.removeEventListener(ChatEvents.CHAT_REPLY_INTENTION, handler);
     };
   }, []);
 
