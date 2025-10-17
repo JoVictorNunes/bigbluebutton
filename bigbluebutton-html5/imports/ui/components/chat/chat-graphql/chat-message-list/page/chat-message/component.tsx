@@ -812,7 +812,6 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
       ref={containerRef}
       $sequence={message.messageSequence}
       data-sequence={message.messageSequence}
-      data-message-type={message.messageType}
       data-focusable={focusable}
       onKeyDown={(e) => {
         const isTargetElement = e.target === e.currentTarget;
